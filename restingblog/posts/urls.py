@@ -128,3 +128,27 @@ The above is same as urlpatterns = format_suffix_patterns(urlpatterns)
 We don't necessarily need to add these extra url patterns in, 
 but it gives us a simple, clean way of referring to a specific format.
 """
+
+
+
+
+from django.conf.urls import url
+from . import views
+
+
+urlpatterns = [
+	url(r'^$', views.BlogIndexView.as_view(), name="blog_index"),
+	url(r'^search/(?P<search>[\w]+)/$', views.SearchView.as_view(), name="blog_search"),
+	url(r'^posts/$', views.PostListView.as_view(), name="blog_post_list"),
+	url(r'^posts/create/$', views.PostCreateView.as_view(), name="blog_post_create"),
+	url(r'^posts/(?P<pk>[\d]+)/$', views.PostDetailView.as_view()),
+	url(r'^posts/(?P<slug>[\w]+)/$', views.PostDetailView.as_view(), name="blog_post_detail"),
+	url(r'^posts/(?P<slug>[\w]+)/edit/$', views.PostUpdateView.as_view(), name="blog_post_edit"),
+	url(r'^posts/(?P<slug>[\w]+)/delete/$', views.PostDeleteView.as_view(), name="blog_post_delete"),
+	url(r'^category/$', views.CategoryListView.as_view(), name="blog_category_List"),
+	url(r'^category/create/$', views.CategoryCreateView.as_view(), name="blog_category_create"),
+	url(r'^category/(?P<pk>[\d]+)/$', views.CategoryDetailView.as_view()),
+	url(r'^category/(?P<slug>[\w]+)/$', views.CategoryDetailView.as_view(), name="blog_category_detail"),
+	url(r'^category/(?P<slug>[\w]+)/edit/$', views.CategoryUpdateView.as_view(), name="blog_category_edit"),
+	url(r'^category/(?P<slug>[\w]+)/delete/$', views.CategoryDeleteView.as_view(), name="blog_category_delete"),	
+	]

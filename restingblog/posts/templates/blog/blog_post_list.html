@@ -1,0 +1,17 @@
+{% extends 'blog_index.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+<ul>
+{% for post in post_list %}
+ <li> <p><h3>{{ post.title | Uppercase }}</h3></p>
+ <p><h6>{{post.created_on}}</h6></p>
+ </li>
+{% empty %}
+<H1> No Articles Yet </H1>
+{% endfor %}
+
+{% endblock content %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ head_title }}{% endblock %}
+
+{% block content %}
+<h1>{{ page_title }}</h1>
+<h2>{{ article.title }}<h2>
+<h4>{{ article.tagline }}</h4>
+<h5> Author: {{article.author}} | Date Created: {{article.created_on}}</h5>
+<p>{{article.content}}</p>
+
+{% endblock %}

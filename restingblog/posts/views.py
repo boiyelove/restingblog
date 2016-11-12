@@ -345,3 +345,154 @@ class UserDetail3(generic.RetrieveAPIView):
 	serializer_class = UserSerializer
 
 '''
+
+
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic import View, ListView, DetailView
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.utils import timezone
+from .models import Post, Category, Tag
+from .forms import PostForm
+# Create your views here.
+
+
+
+class SearchView(View):
+    pass
+
+    def get():
+        pass
+    def post():
+        pass
+
+#Blog Homepage
+class BlogIndexView(TemplateView):
+    template_name = 'blog/blog_index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(BlogIndexView, self).get_context_data(**kwargs)
+        context['head_title'] = "Blog Home"
+        context['page_title'] = "Blog Home"
+        return context
+
+#Post Views
+class PostView:
+    model = Post
+
+class PostEdit(PostView):
+    form_class=PostForm
+    template_name = "forms.html"
+    context_objectt_name = "form"
+
+class PostCreateView(PostEdit, CreateView):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PostCreateView, self).get_context_data(**kwargs)
+        context['head_title'] = "Create New Blog Post"
+        context['page_title'] = "Create New Blog Post"
+        context['btn_title'] = "Create Post"
+        return context
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super(PostCreateview, self).form_valid(form)
+
+
+
+class PostDetailView(PostView, DetailView):
+    template_name = "blog/post_detail.html"
+
+class PostListView(PostView, ListView):
+    template_name = "blog/post_list.html"
+    queryset = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+
+class PostUpdateView(PostEdit, UpdateView):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PostCreateView, self).get_context_data(**kwargs)
+        context['title'] = "Edit Blog Post"
+        context['btn_title'] = "Update Post"
+        return context
+
+class PostDeleteView( PostView, DeleteView):
+    success_url = reverse_lazy('blog:blog_post_list')
+
+
+
+
+
+
+
+
+#Category Views
+class CatView:
+    model = Category
+
+class CatEdit(CatView):
+    fields = ['title', 'parent', 'description']
+    template_name = "forms.html"
+    context_object_name = "form"
+
+#Create
+class CategoryCreateView(CatEdit, CreateView):
+
+    def get_context_data(self, **kwargs):
+        context  = super(CategoryCreateView, self).get_context_data(**kwargs)
+        context['title'] = "Create New Post Category"
+        context['btn_title'] = "Create category"
+        context["submit_url"] = "."
+        return context
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super(PostCreateview, self).form_valid(form)
+
+#Read
+class CategoryListView(CatView, ListView):
+    tenplate_name = "blog/category_list.html"
+    context_object_name = 'cat_list'
+
+class CategoryDetailView(CatView, DetailView):
+    tenplate_name = "blog/category_detail.html"
+    context_object_name = 'cat_obj'
+
+    def get_context_data(self, **kwargs):
+        cat = super(CategoryDetail, self).get_object()
+        context  = super(CategoryDetail, self).get_context_data(**kwargs)
+        context['category_item_list'] = Post.objects.filter(category = cat)
+        return context
+
+#Update
+class CategoryUpdateView(CatEdit, UpdateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryUpdateView, self).get_context_data(**kwargs)
+        context['title'] = "Edit Post Category"
+        context['btn_title'] = "Update Category"
+        context['submit_url'] = "."
+        return context
+
+#Delete
+class CategoryDeleteView(CatView, DeleteView):
+    success_url = reverse_lazy("blog:blog_category_list")
+
+
+
+#Tag Views
+class TagView:
+    model = Tag
+
+class TagEdit(TagView):
+    fields = ['title',]
+    template_name = "form.html"
+    context_obejct_name = "form"
+
+class TagCreateView(TagEdit, CreateView):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(TagCreateView, self).get_context_data(**kwargs)
+        content['title'] = "Create New Tag For  Posts"
+        context['btn_title'] = "Create Tags"
+        content['submit_url'] = "."
+        return context
